@@ -1,0 +1,9 @@
+{
+	"name": "Foosball-Tracker",
+	"description": "Small, encapsulated foosball tracker built for Aptimus Seattle",
+	"url": "foosball.natelong.net",
+	"author": "Nate Long <long.nathaniel@gmail.com>",
+	"dependencies": { "cradle": ">=0.5.5" },
+	"version": "0.3",
+	"main": "foos"
+}
