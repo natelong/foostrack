@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Foosball Tracker</title>
+	<link rel="stylesheet" href="css/bootstrap-1.0.0.min.css" />
+	<link rel="stylesheet" href="css/foos.css" />
+</head>
+<body>
+	<div class="container">
+		<h1>Foosball Tracker</h1>
+		
+		<div class="row">
+			<div class="span12 columns">
+				<ul class="tabs">
+					<li class="active" id="dashboard-tab"><a href="#dashboard">Dashboard</a></li>
+					<li><a href="#players" id="players-tab">Players</a></li>
+					<!-- <li><a href="#games" id="games-tab">Games</a></li> -->
+				</ul>
+				<div id="dashboard">
+					<table id="score-table" class="zebra-striped">
+						<thead>
+							<tr>
+								<th>Player</th>
+								<th>Wins</th>
+								<th>Losses</th>
+								<th>Pts. For</th>
+								<th>Pts. Against</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td colspan="5">Loading...</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="players">
+					Loading...
+				</div>
+				<!--
+				<div id="games">
+					<table id="games-table" class="zebra-striped">
+						<thead>
+							<tr>
+								<th>Winner</th>
+								<th>Winner Points</th>
+								<th>Loser</th>
+								<th>Loser Points</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Nate</td>
+								<td>10</td>
+								<td>5</td>
+								<td>50</td>
+							</tr>
+							<tr>
+								<td>Sparhawk</td>
+								<td>9</td>
+								<td>6</td>
+								<td>45</td>
+							</tr>
+							<tr>
+								<td>Chapel</td>
+								<td>7</td>
+								<td>9</td>
+								<td>35</td>
+							</tr>
+							<tr>
+								<td>Tom</td>
+								<td>5</td>
+								<td>12</td>
+								<td>25</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				-->
+			</div>
+			<div class="span4 columns" id="add-game-column">
+				<form class="form-stacked" id="add-game-form">
+					<fieldset>
+						<legend>Add a Game</legend>
+						<div class="clearfix">
+							<label>Winner</label>
+							<div class="input">
+								<select name="winner">
+									<option value="">Select one...</option>
+									<option value="other">New</option>
+								</select>
+							</div>
+						</div>
+						<div class="clearfix hidden" id="other-winner-container">
+							<label>New Winner Name</label>
+							<div class="input">
+								<input type="text" name="other-winner" class="small" />
+							</div>
+						</div>
+						<div class="clearfix">
+							<label>Winner Score</label>
+							<div class="input">
+								<input type="number" name="winner-score" class="small" min="0" />
+							</div>
+						</div>
+						<div class="clearfix">
+							<label>Loser</label>
+							<div class="input">
+								<select name="loser">
+									<option value="">Select one...</option>
+									<option value="other">New</option>
+								</select>
+							</div>
+						</div>
+						<div class="clearfix hidden" id="other-loser-container">
+							<label>New Loser Name</label>
+							<div class="input">
+								<input type="text" name="other-loser" class="small" />
+							</div>
+						</div>
+						<div class="clearfix">
+							<label>Loser Score</label>
+							<div class="input">
+								<input type="number" name="loser-score" class="small" min="0" />
+							</div>
+						</div>
+						<div class="actions">
+							<input type="submit" class="btn primary" value="Submit" />
+						</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+		<footer>
+			Good times all around!
+		</footer>
+	</div>
+	<script id="templates" type="text/tmpl">
+		{{template:scoreRow}}
+			<tr>
+				<td>{{name}}</td>
+				<td>{{wins}}</td>
+				<td>{{losses}}</td>
+				<td>{{for}}</td>
+				<td>{{against}}</td>
+			</tr>
+		{{/template:scoreRow}}
+		{{template:playerList}}
+			<option value="">Select one...</option>
+			{{players}}
+			<option value="other">New</option>
+		{{/template:playerList}}
+		{{template:playerOption}}
+			<option value="{{name}}">{{name}}</option>
+		{{/template:playerOption}}
+		{{template:playerStats}}
+			<div class="playerInfo">
+				<h3>{{name}}</h3>
+				<div class="row">
+					<div class="span8 columns">
+						<table class="common-table">
+							<tr>
+								<th>Points Per Game</th>
+								<td>{{pointsPerGame}}</td>
+							</tr>
+							<tr>
+								<th>Points Allowed Per Game</th>
+								<td>{{pointsAgainstPerGame}}</td>
+							</tr>
+							<tr>
+								<th>Win Percentage</th>
+								<td>{{winPercentage}}%</td>
+							</tr>
+						</table>
+					</div>
+					<div class="span4 columns">
+						<img src="http://chart.apis.google.com/chart?chs=220x100&cht=p&chco=224499&chd=t:{{wins}},{{losses}}&chdl=Wins|Losses" />
+					</div>
+				</div>
+			</div>
+		{{/template:playerStats}}
+		{{template:alert}}
+			<div class="alert-message {{type}}">
+				<a class="close">×</a>
+				<p>
+					{{text}}
+				</p>
+			</div>
+		{{/template:alert}}
+	</script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script src="js/jquery-tablesorter.min.js"></script>
+	<script src="js/foos.js"></script>
+</body>
+</html>
