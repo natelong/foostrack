@@ -1,3 +1,6 @@
+var db = require( '../db.js' );
+var helpers = require( '../helpers.js' );
+
 var handler = function addGame( req, res ){
 	var rows;
 	var requestString = '';
@@ -34,7 +37,7 @@ var handler = function addGame( req, res ){
 			dateAdded: Date.now()
 		};
 		db.write( gameObject, function( err, data ){
-			foos.helpers.getCurrentRows( function( err, data ){
+			helpers.getCurrentRows( function( err, data ){
 				rows = JSON.stringify({ rows: data });
 				res.writeHead( 200, {
 					'content-type': 'application/json',

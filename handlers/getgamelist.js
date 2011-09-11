@@ -6,6 +6,7 @@ var handler = function getGameList( req, res ){
 			console.log( '[ERROR] Error getting data from DB' );
 			res.writeHead( 500 );
 			res.end();
+			return false;
 		}
 		var i, len;
 		for( i = 0, len = data.length; i < len; i++ ){
