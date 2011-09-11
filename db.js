@@ -9,14 +9,8 @@ var getGUID = function getGUID() {
     return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 }
 
-var write = function write( dataObject ){
-	db.save( getGUID(), dataObject, function( err, res ){
-		if( err ){
-			console.log( '[ERROR] Couldn\'t add record: %o', dataObject );
-		}else{
-			console.log( '[INFO] Successfully added record: %o', dataObject );
-		}
-	});
+var write = function write( dataObject, onComplete ){
+	db.save( getGUID(), dataObject, onComplete );
 };
 
 var get = function get( onComplete ){
