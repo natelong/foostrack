@@ -1,6 +1,14 @@
 var fs = require( 'fs' );
 var cradle = require( 'cradle' );
-var db = new( cradle.Connection )( 'odyssey.natelong.net' ).database( 'foosball' );
+var dbname;
+var db;
+
+if( process.argv.indexOf( '-test' ) === -1 ){
+	dbname = 'foosball';
+}else{
+	dbname = 'foosball_test';
+}
+db = new( cradle.Connection )( 'odyssey.natelong.net' ).database( dbname );
 
 var getGUID = function getGUID() {
     var S4 = function() {
@@ -15,6 +23,7 @@ var write = function write( dataObject, onComplete ){
 
 var get = function get( onComplete ){
 	db.view( 'default/all', function( err, data ){
+		console.log( '' );
 		onComplete( err, data );
 	});
 };
