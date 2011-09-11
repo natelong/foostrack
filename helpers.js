@@ -13,7 +13,7 @@ var sortFunc = function sortFunc( a, b ){
 var doSort = function doSort( err, games, onComplete ){	
 	var players = {};
 	var rows = [];
-	var i = games.length;
+	var i = games ? games.length : 0;
 	var tmpGame;
 
 	while( i-- ){
