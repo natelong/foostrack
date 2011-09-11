@@ -65,36 +65,16 @@ foos.handlers.addGame = function( req, res ){
 			loseScore: parseInt( reqObj.loseScore ),
 			dateAdded: Date.now()
 		};
-		if( reqObj.winner.toLowerCase().indexOf( 'bird' ) === -1 && reqObj.winner.toLowerCase().indexOf( 'flyer' ) === -1 ){
-			status = db.write( gameObject );
+		db.write( gameObject, function( err, data ){
 			foos.helpers.getCurrentRows( function( err, data ){
 				rows = JSON.stringify({ rows: data });
-				res.writeHead( status, {
+				res.writeHead( 200, {
 					'content-type': 'application/json',
 					'content-length': rows.length
 				});
 				res.end( rows );
 			});
-		}else{
-			console.log( '[INFO] BirdCatcher engaged!' );
-			status = 200;
-			foos.helpers.getCurrentRows( function( err, data ){
-				birdCatcher = data;
-				birdCatcher.push({
-					name: reqObj.winner,
-					wins: 1,
-					losses: 0,
-					for: parseInt( reqObj.winScore ),
-					against: parseInt( reqObj.loseScore )
-				});
-				rows = JSON.stringify({ rows: birdCatcher });
-				res.writeHead( status, {
-					'content-type': 'application/json',
-					'content-length': rows.length
-				});
-				res.end( rows );
-			});
-		}
+		});
 	});
 };
 
@@ -118,6 +98,28 @@ foos.handlers.lastWeek = function lastWeek( req, res ){
 		});
 		res.end( rows );
 	}, new Date( Date.now() - (1000 * 60 * 60 * 24 * 7) ) );
+};
+
+foos.handlers.getGameList = function getGameList( req, res ){
+	var doc = 'winner,loser,winscore,losescore,date';
+
+	db.get( function( err, data ){
+		if( err ){
+			console.log( '[ERROR] Error getting data from DB' );
+			res.writeHead( 500 );
+			res.end();
+		}
+		var i, len;
+		for( i = 0, len = data.length; i < len; i++ ){
+			doc += '\n';
+			doc += data[ i ].value.winner + ',' + data[ i ].value.loser + ',' + data[ i ].value.winScore + ',' + data[ i ].value.loseScore + ',' + (new Date( data[ i ].value.dateAdded ));
+		}
+		res.writeHead( 200, {
+			'content-type': 'text/csv',
+			'content-length': doc.length
+		});
+		res.end( doc );
+	});
 };
 
 foos.helpers.getCurrentRows = function getCurrentRows( onComplete, date ){
@@ -201,6 +203,11 @@ foos.routes = [
 		search: /\/lastweek/,
 		func: foos.handlers.lastWeek,
 		methods: [ 'GET', 'POST' ]
+	},{
+		name: 'Get Games CSV',
+		search: /\/games.csv/,
+		func: foos.handlers.getGameList,
+		methods: [ 'GET' ]
 	},{
 		name: 'Favicon',
 		search: /favicon.ico/,
