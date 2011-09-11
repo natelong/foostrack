@@ -1,2 +1,4 @@
 db.json
 *.log
+updatecouch.js
+node_modules
