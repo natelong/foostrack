@@ -1,0 +1,10 @@
+{
+	"production": {
+		"database_name": "foosball",
+		"port": 8080
+	},
+	"test": {
+		"database_name": "foosball_test",
+		"port": 8081
+	}
+}
