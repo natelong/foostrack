@@ -20,10 +20,11 @@ foos.handlers.favicon = function( req, res ){
 foos.handlers.generic = function( req, res ){
 	var result = {
 		headers: {
-			'Content-type': 'text/html'
+			'Content-type': 'text/html',
+			'location': 'http://foosball.natelong.net/'
 		},
-		responseCode: 200,
-		content: '<!DOCTYPE html><html><head><title>AWS Node Test</title></head><body><h1>Hello from NodeJS!</h1></body></html>'
+		responseCode: 302,
+		content: ''
 	};
 	
 	res.writeHead( result.responseCode, result.headers );
@@ -224,7 +225,7 @@ foos.routes = [
 foos.init = function init(){
 	var srv = http.createServer( foos.routeRequest );
 
-	srv.listen( 8080, function(){
+	srv.listen( 8081, function(){
 		console.log( 'Server successfully started.' );
 	});
 };
