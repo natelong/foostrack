@@ -1,18 +1,26 @@
 var http = require( 'http' );
-var db = require( './db.js' );
+var fs = require( 'fs' );
+var settings = require( './settings.js' );
 var routes = [];
-
-exports.helpers = require( './helpers.js' );
 
 var addRoute = function addRoute( handlerName ){
 	routes.push( require( handlerName ).definition );
 };
 
 var init = function init(){
-	var srv = http.createServer( routeRequest );
+	settings.getSetting( 'port', function( err, port ){
+		if( err ){
+			throw err;
+			return;
+		}
+		startServer( port );
+	});
+};
 
-	srv.listen( 8080, function(){
-		console.log( 'Server successfully started.' );
+var startServer = function( port ){
+	var srv = http.createServer( routeRequest );
+	srv.listen( port, function(){
+		console.log( 'Server successfully listening on port %s.', port );
 	});
 };
 
@@ -48,4 +56,3 @@ var routeRequest = function( req, res ){
 
 exports.addRoute = addRoute;
 exports.init = init;
-exports.routeRequest = routeRequest;
