@@ -1,14 +1,12 @@
 var fs = require( 'fs' );
 var cradle = require( 'cradle' );
+var settings = require( './settings.js' );
 var dbname;
 var db;
 
-if( process.argv.indexOf( '-test' ) === -1 ){
-	dbname = 'foosball';
-}else{
-	dbname = 'foosball_test';
-}
-db = new( cradle.Connection )( 'odyssey.natelong.net' ).database( dbname );
+settings.getSetting( 'database_name', function( err, dbName ){
+	db = new( cradle.Connection )( 'odyssey.natelong.net' ).database( dbName );
+});
 
 var getGUID = function getGUID() {
     var S4 = function() {
