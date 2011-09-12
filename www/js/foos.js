@@ -59,6 +59,7 @@ var getStateFromHash = function getStateFromHash(){
 	var players = $('#players');
 	var games = $('#games');
 	var dashboard = $('#dashboard');
+	var teams = $('#teams');
 
 	$('.tabs .active').removeClass('active');
 	
@@ -68,12 +69,21 @@ var getStateFromHash = function getStateFromHash(){
 			$('#players-tab').parent().addClass('active');
 			games.hide();
 			dashboard.hide();
+			teams.hide();
 			break;
 		case '#games':
 			games.show();
 			$('#games-tab').parent().addClass('active');
 			players.hide();
 			dashboard.hide();
+			teams.hide();
+			break;
+		case '#teams':
+			teams.show();
+			$('#teams-tab').parent().addClass('active');
+			players.hide();
+			dashboard.hide();
+			games.hide();
 			break;
 		case '#dashboard':
 		default:
@@ -81,6 +91,7 @@ var getStateFromHash = function getStateFromHash(){
 			$('#dashboard-tab').addClass('active');
 			players.hide();
 			games.hide();
+			teams.hide();
 			break;
 	}
 }
@@ -162,7 +173,7 @@ var updateScoreTable = function updateScoreTable( data ){
 			name: row.name,
 			wins: row.wins,
 			losses: row.losses,
-			pointsPerGame: Math.ceil( row.for / row.total ),
+			pointsPerGame: Math.ceil( row[ 'for' ] / row[ 'total' ] ),
 			pointsAgainstPerGame: Math.ceil( row.against / row.total ),
 			winPercentage: ( row.wins / row.total ).toFixed( 2 ) * 100
 		}, 'playerStats');
