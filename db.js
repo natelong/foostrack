@@ -1,12 +1,23 @@
 var fs = require( 'fs' );
 var cradle = require( 'cradle' );
 var settings = require( './settings.js' );
-var dbname;
 var db;
+var dbSettings = {};
 
-settings.getSetting( 'database_name', function( err, dbName ){
-	db = new( cradle.Connection )( 'odyssey.natelong.net' ).database( dbName );
+settings.getSetting( 'database_name', function( err, name ){
+	dbSettings.name = name;
+	startDatabase();
 });
+settings.getSetting( 'database_url', function( err, url ){
+	dbSettings.url = url;
+	startDatabase();
+});
+
+var startDatabase = function startDatabase(){
+	if( !dbSettings.name || !dbSettings.url ) return false;
+
+	db = new( cradle.Connection )( dbSettings.url ).database( dbSettings.name );
+};
 
 var getGUID = function getGUID() {
     var S4 = function() {
