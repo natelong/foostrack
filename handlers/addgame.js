@@ -1,5 +1,4 @@
 var db = require( '../db.js' );
-var helpers = require( '../helpers.js' );
 
 var handler = function addGame( req, res ){
 	var rows;
@@ -37,21 +36,21 @@ var handler = function addGame( req, res ){
 			dateAdded: Date.now()
 		};
 		db.write( gameObject, function( err, data ){
-			helpers.getCurrentRows( function( err, data ){
+			db.getPlayers( function( err, data ){
 				rows = JSON.stringify({ rows: data });
 				res.writeHead( 200, {
 					'content-type': 'application/json',
 					'content-length': rows.length
 				});
 				res.end( rows );
-			});
+			}, new Date( Date.now() - ( 1000 * 60 * 60 * 24 * 7 ) ) );
 		});
 	});
 };
 
 var definition = {
 	name: 'Add Game Record',
-	search: /\/add/,
+	search: /\/add(?:\/.*|\?.*){0,1}$/i,
 	func: handler,
 	methods: [ 'POST' ]
 };

@@ -11,7 +11,7 @@ var handler = function favicon( req, res ){
 
 var definition = {
 	name: 'Favicon',
-	search: /favicon.ico/,
+	search: /\/favicon.ico(?:\/.*|\?.*){0,1}$/i,
 	func: handler,
 	methods: [ 'GET' ]
 };
