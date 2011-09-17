@@ -1,6 +1,7 @@
 var fs = require( 'fs' );
 var cradle = require( 'cradle' );
 var settings = require( './settings.js' );
+var helpers = require( './helpers.js' );
 var db;
 var dbSettings = {};
 
@@ -30,20 +31,29 @@ var write = function write( dataObject, onComplete ){
 	db.save( getGUID(), dataObject, onComplete );
 };
 
-var get = function get( onComplete ){
-	db.view( 'default/all', function( err, data ){
-		console.log( '' );
-		onComplete( err, data );
-	});
+var getGames = function get( onComplete, date ){
+	date = date || 0;
+
+	db.view(
+		'default/bydate',{
+			'querystring': 'startkey=' + date
+		}, function( err, data ){
+			console.log( '[INFO] getGames returned %s rows since %s', data.length, date.valueOf() );
+			onComplete( err, data );
+		}
+	);
 };
 
-var getSinceDate = function getSinceDate( date, onComplete ){
-	db.view( 'default/bydate', { 'querystring': 'startkey=' + date }, function( err, data ){
-		console.log( '[INFO] getSinceDate returned %s rows since %s', data.length, date.valueOf() );
-		onComplete( err, data );
-	});
+var getPlayers = function getPlayers( onComplete, date ){
+	var complete = function( err, games ){
+		helpers.doSort( err, games, onComplete );
+	}
+
+	date = date || 0;
+
+	getGames( complete, date );
 };
 
 exports.write = write;
-exports.get = get;
-exports.getSinceDate = getSinceDate;
+exports.getGames = getGames;
+exports.getPlayers = getPlayers;

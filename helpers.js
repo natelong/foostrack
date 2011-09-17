@@ -1,5 +1,3 @@
-var db = require( './db.js' );
-
 var sortFunc = function sortFunc( a, b ){
 	if( a.wins < b.wins ){
 		return 1;
@@ -55,16 +53,4 @@ var doSort = function doSort( err, games, onComplete ){
 	onComplete( null, rows.sort( sortFunc ) );
 };
 
-var getCurrentRows = function getCurrentRows( onComplete, date ){
-	var complete = function( err, games ){
-		doSort( err, games, onComplete );
-	}
-
-	if( date ){
-		db.getSinceDate( date, complete );
-	}else{
-		db.get( complete );
-	}
-};
-
-exports.getCurrentRows = getCurrentRows;
+exports.doSort = doSort;
