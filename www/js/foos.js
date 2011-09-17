@@ -246,7 +246,7 @@ var checkForOther = function checkForOther( e ){
 	
 	getStateFromHash();
 	
-	$.ajax( appURL + 'all',{
+	$.ajax( appURL + 'players',{
 		success: updateScoreTable,
 		error: function( xhr, status, error ){
 			console.error( 'Error getting game data: %s', status );
