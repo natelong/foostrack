@@ -1,3 +1,4 @@
+/*global console, exports*/
 var sortFunc = function sortFunc( a, b ){
 	if( a.wins < b.wins ){
 		return 1;
@@ -8,7 +9,7 @@ var sortFunc = function sortFunc( a, b ){
 	}
 };
 
-var doSort = function doSort( err, games, onComplete ){	
+var doSort = function doSort( err, games, onComplete ){
 	var players = {};
 	var rows = [];
 	var i = games ? games.length : 0;
@@ -22,32 +23,34 @@ var doSort = function doSort( err, games, onComplete ){
 				name: tmpGame.winner,
 				wins: 1,
 				losses: 0,
-				for: tmpGame.winScore,
-				against: tmpGame.loseScore
+				pointsFor: tmpGame.winScore,
+				pointsAgainst: tmpGame.loseScore
 			};
 		}else{
 			players[ tmpGame.winner ].wins += 1;
-			players[ tmpGame.winner ].for += tmpGame.winScore;
-			players[ tmpGame.winner ].against += tmpGame.loseScore;
+			players[ tmpGame.winner ].pointsFor += tmpGame.winScore;
+			players[ tmpGame.winner ].pointsAgainst += tmpGame.loseScore;
 		}
-	
+
 		if( !players[ tmpGame.loser ] ){
 			players[ tmpGame.loser ] = {
 				name: tmpGame.loser,
 				wins: 0,
 				losses: 1,
-				for: tmpGame.loseScore,
-				against: tmpGame.winScore
-			}
+				pointsFor: tmpGame.loseScore,
+				pointsAgainst: tmpGame.winScore
+			};
 		}else{
 			players[ tmpGame.loser ].losses += 1;
-			players[ tmpGame.loser ].for += tmpGame.loseScore;
-			players[ tmpGame.loser ].against += tmpGame.winScore;
+			players[ tmpGame.loser ].pointsFor += tmpGame.loseScore;
+			players[ tmpGame.loser ].pointsAgainst += tmpGame.winScore;
 		}
 	}
 
-	for( i in players ) if ( players.hasOwnProperty( i ) ){
-		rows.push( players[ i ] );
+	for( i in players ){
+		if ( players.hasOwnProperty( i ) ){
+			rows.push( players[ i ] );
+		}
 	}
 
 	onComplete( null, rows.sort( sortFunc ) );

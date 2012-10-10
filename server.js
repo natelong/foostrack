@@ -1,3 +1,4 @@
+/*global require, console, exports*/
 var http = require( 'http' );
 var fs = require( 'fs' );
 var settings = require( './settings.js' );
@@ -5,23 +6,6 @@ var routes = [];
 
 var addRoute = function addRoute( handlerName ){
 	routes.push( require( handlerName ).definition );
-};
-
-var init = function init(){
-	settings.getSetting( 'port', function( err, port ){
-		if( err ){
-			throw err;
-			return;
-		}
-		startServer( port );
-	});
-};
-
-var startServer = function( port ){
-	var srv = http.createServer( routeRequest );
-	srv.listen( port, function(){
-		console.log( 'Server successfully listening on port %s.', port );
-	});
 };
 
 var routeRequest = function( req, res ){
@@ -43,7 +27,7 @@ var routeRequest = function( req, res ){
 				res.writeHead( 500, { 'Content-Type': 'text/plain' } );
 				res.end( );
 			}
-			
+
 			return true;
 		}
 	}
@@ -52,6 +36,22 @@ var routeRequest = function( req, res ){
 		res.writeHead( 404, { 'Content-Type': 'text/plain' } );
 		res.end( '404\'d' );
 	}
+};
+
+var startServer = function( port ){
+	var srv = http.createServer( routeRequest );
+	srv.listen( port, function(){
+		console.log( 'Server successfully listening on port %s.', port );
+	});
+};
+
+var init = function init(){
+	settings.getSetting( 'port', function( err, port ){
+		if( err ){
+			throw err;
+		}
+		startServer( port );
+	});
 };
 
 exports.addRoute = addRoute;

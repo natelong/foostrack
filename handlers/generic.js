@@ -5,9 +5,9 @@ var handler = function generic( req, res ){
 			'location': 'http://foosball.natelong.net/'
 		},
 		responseCode: 302,
-		content: ''
+		content: 'generic'
 	};
-	
+
 	res.writeHead( result.responseCode, result.headers );
 	res.end( result.content || null );
 };

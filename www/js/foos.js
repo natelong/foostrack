@@ -1,11 +1,12 @@
+/*global $, console*/
 var appURL = '/data/';
 var template;
 
 var UIDManager = function UIDManager(len) {
 	this.counter = 0;
-	this.uidLength = len || 5
+	this.uidLength = len || 5;
 };
-	
+
 UIDManager.prototype.getUID = function getUID() {
     var i, delta;
     var returnVals = [];
@@ -13,32 +14,34 @@ UIDManager.prototype.getUID = function getUID() {
     this.counter++;
     delta = this.uidLength - (this.counter + "").length;
     for (i = 0; i < delta; i++) {
-        returnVals.push("0")
+        returnVals.push("0");
     }
-    return returnVals.join("") + this.counter
+    return returnVals.join("") + this.counter;
 };
 
 var TemplateManager = function TemplateManager() {
 	this.template = document.getElementById("templates").innerHTML;
 	this.template = this.template.replace(/(?:\n|\t)/g, "");
 	this.uid = new UIDManager();
-	this.templateCache = []
+	this.templateCache = [];
 };
-	
+
 TemplateManager.prototype.getTemplate = function getTemplate(templateName) {
+	var myTemplate;
+
     if (this.templateCache[templateName] !== undefined) {
-        return this.templateCache[templateName]
+        return this.templateCache[templateName];
     }
     var templateSearch = new RegExp("{{2}template:" + templateName + "}{2}.*{{2}/template:" + templateName + "}{2}");
     var templateMarkers = new RegExp("({{2}template:" + templateName + "}{2}|{{2}/template:" + templateName + "}{2})", "g");
     try {
-        var myTemplate = this.template.match(templateSearch)[0]
+        myTemplate = this.template.match(templateSearch)[0];
     } catch (e) {
-        throw "Couldn't find the selected template."
+        throw "Couldn't find the selected template.";
     }
     myTemplate = myTemplate.replace(templateMarkers, "");
     this.templateCache[templateName] = myTemplate;
-    return myTemplate
+    return myTemplate;
 };
 
 TemplateManager.prototype.transform = function transform(obj, templateName) {
@@ -47,11 +50,11 @@ TemplateManager.prototype.transform = function transform(obj, templateName) {
     var template = this.getTemplate(templateName);
     for (i in obj) {
         if (obj.hasOwnProperty(i)) {
-            template = template.replace(new RegExp("{{2}" + i + "}{2}", "g"), obj[i])
+            template = template.replace(new RegExp("{{2}" + i + "}{2}", "g"), obj[i]);
         }
     }
     template = template.replace(/\{{2}uid\}{2}/g, uid);
-    return template
+    return template;
 };
 
 var getStateFromHash = function getStateFromHash(){
@@ -62,7 +65,7 @@ var getStateFromHash = function getStateFromHash(){
 	var teams = $('#teams');
 
 	$('.tabs .active').removeClass('active');
-	
+
 	switch( appState ){
 		case '#players':
 			players.show();
@@ -85,7 +88,6 @@ var getStateFromHash = function getStateFromHash(){
 			dashboard.hide();
 			games.hide();
 			break;
-		case '#dashboard':
 		default:
 			dashboard.show();
 			$('#dashboard-tab').addClass('active');
@@ -94,34 +96,34 @@ var getStateFromHash = function getStateFromHash(){
 			teams.hide();
 			break;
 	}
-}
+};
 
 var addGame = function addGame( e ){
 	e.stopPropagation();
 	e.preventDefault();
-	
+
 	hideMessaging( '#add-game-column' );
-	
+
 	var requestInfo = {
 		winner: $('#add-game-form select[name=winner]').val(),
 		loser: $('#add-game-form select[name=loser]').val(),
 		winScore: $('#add-game-form input[name=winner-score]').val(),
 		loseScore: $('#add-game-form input[name=loser-score]').val()
 	};
-	
+
 	if( requestInfo.winner === 'other' ){
 		requestInfo.winner = $('input[name=other-winner]').val();
 	}
-	
+
 	if( requestInfo.loser === 'other' ){
 		requestInfo.loser = $('input[name=other-loser]').val();
 	}
-	
+
 	if( requestInfo.winner === '' ||
 			requestInfo.loser === '' ||
 			requestInfo.winScore === '' ||
 			requestInfo.loseScore === '' ){
-		showMessaging( '#add-game-column', 'Nope, try again.', 'error' )
+		showMessaging( '#add-game-column', 'Nope, try again.', 'error' );
 		return;
 	}
 
@@ -139,7 +141,7 @@ var addGame = function addGame( e ){
 
 var addGameSuccess = function addGameSuccess( data, status ){
 	$( '#add-game-form' )[0].reset();
-	
+
 	var hideSuccessMessaging = function(){
 		hideMessaging( '.container' );
 	};
@@ -159,11 +161,11 @@ var updateScoreTable = function updateScoreTable( data ){
 	var statsContainer = '';
 	var i, len;
 	var row;
-	
+
 	if( data.rows.length < 1 ){
 		showMessaging( '.container', 'No game data in database!', 'warning' );
 	}
-	
+
 	for( i = 0, len = data.rows.length; i < len; i++ ){
 		row = data.rows[ i ];
 		row.total = row.wins + row.losses;
@@ -173,16 +175,16 @@ var updateScoreTable = function updateScoreTable( data ){
 			name: row.name,
 			wins: row.wins,
 			losses: row.losses,
-			pointsPerGame: Math.ceil( row[ 'for' ] / row[ 'total' ] ),
-			pointsAgainstPerGame: Math.ceil( row.against / row.total ),
+			pointsPerGame: Math.ceil( row.pointsFor / row.total ),
+			pointsAgainstPerGame: Math.ceil( row.pointsAgainst / row.total ),
 			winPercentage: ( row.wins / row.total ).toFixed( 2 ) * 100
 		}, 'playerStats');
 	}
-	
+
 	playerListContainer = template.transform({
 		players: playerList
 	}, 'playerList');
-	
+
 	$( '#players' ).html( statsContainer );
 	$( 'select[name=winner], select[name=loser]' ).html( playerListContainer );
 	$( '#score-table tbody' ).html( rowString );
@@ -204,8 +206,10 @@ var hideCurrentMessage = function hideCurrentMessage( e ){
 var showMessaging = function showMessaging( target, text, type ){
 	var types = [ 'error', 'warning', 'success', 'info' ];
 	var message;
-	if( types.indexOf( type ) === -1 ) return;
-	
+	if( types.indexOf( type ) === -1 ){
+		return;
+	}
+
 	message = template.transform({
 		type: type,
 		text: text
@@ -236,16 +240,16 @@ var checkForOther = function checkForOther( e ){
 
 (function init(){
 	template = new TemplateManager();
-	
+
 	$('#score-table, #games-table').tablesorter();
 	$('#add-game-form').submit( addGame );
 	$('select[name=winner], select[name=loser]').change( checkForOther );
 	$('.alert-message .close').live( 'click', hideCurrentMessage );
-	
+
 	window.addEventListener( 'hashchange', getStateFromHash, false );
-	
+
 	getStateFromHash();
-	
+
 	$.ajax( appURL + 'players',{
 		success: updateScoreTable,
 		error: function( xhr, status, error ){

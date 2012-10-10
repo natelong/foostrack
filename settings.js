@@ -1,31 +1,32 @@
+/*global require, console, exports, process*/
 var fs = require( 'fs' );
-var settings;
 
+var settings;
 var loading = false;
 var requestCache = [];
+var modeSearch = /(?:--mode|-m)\W+(\w+)/i;
 
 var _init = function _init(){
 	fs.readFile( './settings.json', function( err, data ){
 		var settingsObj;
-		var modeSearch = /-mode=\w+(?=.*)/i;
 		var modeSearchResults;
 		var mode;
 
 		if( err ){
-			console.log( '[ERROR] Couldn\'t load settings file.' );
+			console.log( '[ERROR] Couldn\'t load settings file: %s', err.message );
 			return;
-		};
-	
+		}
+
 		try{
 			settingsObj = JSON.parse( data );
-		}catch( e ){
-			console.log( '[ERROR] Couldn\'t parse settings data.' );
+		}catch( err ){
+			console.log( '[ERROR] Couldn\'t parse settings data: %s', err.message );
 			return;
 		}
 
 		modeSearchResults = process.argv.toString().match( modeSearch );
 		if( modeSearchResults ){
-			mode = modeSearchResults[ 0 ].replace( '-mode=', '' );
+			mode = modeSearchResults[ 0 ].replace( modeSearch, '$1' );
 		}else{
 			mode = 'production';
 		}
@@ -41,7 +42,7 @@ var _init = function _init(){
 
 		_flushRequestCache();
 	});
-}
+};
 
 var _flushRequestCache = function flushRequestCache(){
 	console.log( '[INFO] Flushing %s requests', requestCache.length );
